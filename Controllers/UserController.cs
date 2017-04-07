@@ -1,39 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DAOUserProject.Models;
+using DAOUserProject.DAL.Entity;
+using DAOUserProject.DAL;
 
 namespace DAOUserProject.Controllers
 {
     public class UserController : Controller
     {
-        private readonly DAOUserProjectContext _context;
+        private IDAO<User> userDAO;
 
-        public UserController(DAOUserProjectContext context)
+        public UserController(IDAO<User> userDAO)
         {
-            _context = context;    
+            this.userDAO = userDAO;
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.User.ToListAsync());
+            return View(userDAO.GetAll());
         }
 
         // GET: User/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var user = userDAO.Get(id);
+
             if (user == null)
             {
                 return NotFound();
@@ -49,30 +49,27 @@ namespace DAOUserProject.Controllers
         }
 
         // POST: User/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CreatedAt,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
+        public IActionResult Create([Bind("Id,CreatedAt,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(user);
-                await _context.SaveChangesAsync();
+                userDAO.Create(user);
                 return RedirectToAction("Index");
             }
             return View(user);
         }
 
         // GET: User/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
+            var user = userDAO.Get(id);
             if (user == null)
             {
                 return NotFound();
@@ -81,11 +78,9 @@ namespace DAOUserProject.Controllers
         }
 
         // POST: User/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CreatedAt,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
+        public IActionResult Edit(int id, [Bind("Id,CreatedAt,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
         {
             if (id != user.Id)
             {
@@ -94,37 +89,24 @@ namespace DAOUserProject.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                Console.WriteLine(user.Login);
+                userDAO.Update(user);
                 return RedirectToAction("Index");
             }
+            user.Password = null;
             return View(user);
         }
 
         // GET: User/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.User
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var user = userDAO.Get(id);
+
             if (user == null)
             {
                 return NotFound();
@@ -136,17 +118,12 @@ namespace DAOUserProject.Controllers
         // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+            var user = userDAO.Get(id);
+            userDAO.Delete(user);
             return RedirectToAction("Index");
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.User.Any(e => e.Id == id);
-        }
     }
 }

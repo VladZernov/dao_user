@@ -1,18 +1,17 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using DAOUserProject.DAL.Entity;
 
-namespace DAOUserProject.Models
+namespace DAOUserProject.DAL
 {
-    public partial class DAOUserProjectContext : DbContext
+    public partial class EFContext : DbContext
     {
         public virtual DbSet<User> User { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-            optionsBuilder.UseMySql(@"Server=localhost;Database=dao_user;UserID=root;Password=root;");
-        }
+        public EFContext(DbContextOptions<EFContext> options)
+        :base(options)
+        {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -69,6 +68,12 @@ namespace DAOUserProject.Models
                     .IsRequired()
                     .HasColumnName("password")
                     .HasColumnType("varchar(255)");
+
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasColumnName("salt")
+                    .HasColumnType("varchar(255)"); 
+                                                     
             });
         }
     }

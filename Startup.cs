@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using DAOUserProject.DAL;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DAOUserProject
 {
@@ -29,6 +32,12 @@ namespace DAOUserProject
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddDbContext<EFContext>(options =>
+                options.UseMySql(Configuration.GetConnectionString("MySQLConnection")));
+            
+            services.AddScoped(typeof(IDAO<>), typeof(EFDAO<>));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
