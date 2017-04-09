@@ -10,5 +10,6 @@ namespace DAOUserProject.DAL
         TEntity Get(int? id);
         void Delete(TEntity item);
         void Update(TEntity item);
+        void Detach(TEntity item);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DAOUserProject.DAL.Entity;
 using DAOUserProject.DAL;
+using System.Data.SqlClient;
 
 namespace DAOUserProject.Controllers
 {
@@ -55,7 +57,25 @@ namespace DAOUserProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                userDAO.Create(user);
+                try {
+                    userDAO.Create(user);
+                }
+                catch(Exception ex)
+                {
+                    Console.Write(ex.ToString());
+                    if(ex.ToString().Contains("Duplicate entry") && ex.ToString().Contains("login"))
+                    {
+                        Console.Write("!!!");
+                        ModelState.AddModelError("Login", "Duplicate entry detected!");
+                        
+                    } 
+                    else if (ex.ToString().Contains("Duplicate entry") && ex.ToString().Contains("e-mail"))
+                    {
+                        ModelState.AddModelError("EMail", "Duplicate entry detected!");
+                    }
+                    return View(user);
+                }
+                
                 return RedirectToAction("Index");
             }
             return View(user);
@@ -80,20 +100,22 @@ namespace DAOUserProject.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,CreatedAt,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
+        public IActionResult Edit(int id, [Bind("Id,Delivery,EMail,FirstName,Icq,LastName,Login,Password")] User user)
         {
             if (id != user.Id)
             {
                 return NotFound();
             }
+            User oldUser = userDAO.Get(id);
+            user.Password = oldUser.Password;
+            user.CreatedAt = oldUser.CreatedAt;
+            userDAO.Detach(oldUser);
 
             if (ModelState.IsValid)
             {
-                Console.WriteLine(user.Login);
                 userDAO.Update(user);
                 return RedirectToAction("Index");
             }
-            user.Password = null;
             return View(user);
         }
 

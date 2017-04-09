@@ -30,6 +30,12 @@ namespace DAOUserProject.DAL
             return entities.Find(id);
         }
 
+        public void Detach(TEntity entity)
+        {
+            context.Entry(entity).State = EntityState.Detached;
+            context.SaveChanges();
+        }
+
         public void Create(TEntity entity)
         {
             if (entity == null)

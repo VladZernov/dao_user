@@ -21,21 +21,21 @@
                 <input asp-for="FirstName" class="form-control" />
                 <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
-        </div>    
+        </div>      
         <div class="form-group">
             <label asp-for="LastName" class="col-md-2 control-label"></label>
             <div class="col-md-10">
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
-        </div>
+        </div>          
         <div class="form-group">
-            <label asp-for="EMail" class="col-md-2 control-label" type="email"></label>
+            <label asp-for="EMail" class="col-md-2 control-label"></label>
             <div class="col-md-10">
-                <input asp-for="EMail" class="form-control" />
+                <input asp-for="EMail" class="form-control" type="email"/>
                 <span asp-validation-for="EMail" class="text-danger"></span>
             </div>
-        </div>        
+        </div>   
         <div class="form-group">
             <label asp-for="Login" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -43,19 +43,13 @@
                 <span asp-validation-for="Login" class="text-danger"></span>
             </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Password" class="col-md-2 control-label" type="password"></label>
+        <div class="form-group hidden">
+            <label asp-for="Password" class="col-md-2 control-label" ></label>
             <div class="col-md-10">
-                <input asp-for="Password" class="form-control" />
+                <input id="Password" name="Password" class="form-control" type="password"/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-        </div>  
-        <div class="form-group">
-            <label class="col-md-2 control-label">Подтвердите пароль</label>
-            <div class="col-md-10">
-                <input class="form-control" id="ConfirmPassword" type="password"/>
-            </div>
-        </div>      
+        </div>                 
         <div class="form-group">
             <label asp-for="Icq" class="col-md-2 control-label"></label>
             <div class="col-md-10">
@@ -70,7 +64,7 @@
                     <label asp-for="Delivery"></label>
                 </div>
             </div>
-        </div>        
+        </div>      
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />

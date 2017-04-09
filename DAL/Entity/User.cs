@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAOUserProject.DAL.Entity
 {
@@ -12,29 +13,27 @@ namespace DAOUserProject.DAL.Entity
 
         public int Id { get; set; }
 
-        [Display(Name = "Дата регистрации")]
+        [Display(Name = "Registration date")]
         public DateTime CreatedAt { get; set; }
-        [Display(Name = "Рассылка")]
-        [Required]
         public bool Delivery { get; set; }
         [Display(Name = "E-Mail")]
         [Required]
         public string EMail { get; set; }
-        [Display(Name = "Имя")]
+        [Display(Name = "First Name")]
         [Required]
-        [RegularExpression(@"^[а-яА-Я]+$")]
+        [RegularExpression(@"^[a-zA-Z]+$")]
         public string FirstName { get; set; }
-        [Display(Name = "Фамилия")]
+        [Display(Name = "Last Name")]
         [Required]
-        [RegularExpression(@"^[а-яА-Я]+$")]        
+        [RegularExpression(@"^[a-zA-Z]+$")]        
         public string LastName { get; set; } 
         [StringLength(60, MinimumLength = 6)]       
         [Display(Name = "ICQ")]
         public string Icq { get; set; }
-        [Display(Name = "Логин")]
+        [Display(Name = "Login")]
         [Required]
         public string Login { get; set; }
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password")]
         [Required]
         public string Password 
         { 
@@ -59,6 +58,11 @@ namespace DAOUserProject.DAL.Entity
                     iterationCount: 10000,
                     numBytesRequested: 256 / 8));
             } 
+        }
+
+        public void setHash(string hash)
+        {
+             _password = hash;
         }
 
         public string Salt { get; set; }
