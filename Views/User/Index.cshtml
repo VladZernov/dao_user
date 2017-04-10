@@ -8,8 +8,10 @@
     <title>Index</title>
 </head>
 <body>
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="create-button">
+    <a asp-action="Create" class="btn btn-info btn">
+        <span class="glyphicon glyphicon-plus"></span> Create New 
+    </a>
 </p>
 <table class="table">
     <thead>
@@ -69,9 +71,12 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td width="10%">
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-default">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-default">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-default">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-info btn">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit 
+                </a> |
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-info btn">
+                    <span class="glyphicon glyphicon-trash"></span> Delete 
+                </a>
             </td>
         </tr>
 }

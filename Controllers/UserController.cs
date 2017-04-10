@@ -65,7 +65,6 @@ namespace DAOUserProject.Controllers
                     Console.Write(ex.ToString());
                     if(ex.ToString().Contains("Duplicate entry") && ex.ToString().Contains("login"))
                     {
-                        Console.Write("!!!");
                         ModelState.AddModelError("Login", "Duplicate entry detected!");
                         
                     } 
@@ -110,10 +109,26 @@ namespace DAOUserProject.Controllers
             user.Password = oldUser.Password;
             user.CreatedAt = oldUser.CreatedAt;
             userDAO.Detach(oldUser);
-
+            ModelState.Remove("Password");
             if (ModelState.IsValid)
             {
-                userDAO.Update(user);
+                try {
+                    userDAO.Update(user);
+                }
+                catch(Exception ex)
+                {
+                    Console.Write(ex.ToString());
+                    if(ex.ToString().Contains("Duplicate entry") && ex.ToString().Contains("login"))
+                    {
+                        ModelState.AddModelError("Login", "Duplicate entry detected!");
+                        
+                    } 
+                    else if (ex.ToString().Contains("Duplicate entry") && ex.ToString().Contains("e-mail"))
+                    {
+                        ModelState.AddModelError("EMail", "Duplicate entry detected!");
+                    }
+                    return View(user);
+                }
                 return RedirectToAction("Index");
             }
             return View(user);
